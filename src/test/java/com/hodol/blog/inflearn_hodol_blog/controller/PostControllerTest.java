@@ -12,8 +12,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest
 class PostControllerTest {
@@ -58,7 +57,7 @@ class PostControllerTest {
                         .content("{\"title\": \"제목\", \"content\": \"내용\"}")
                 ) // application/json
                 .andExpect(status().isOk())
-                .andExpect(content().string("hello world!"))
+                .andExpect(content().string("{}"))
                 .andDo(MockMvcResultHandlers.print());
     }
 
@@ -67,10 +66,10 @@ class PostControllerTest {
     void postValidationTest() throws Exception {
         mockMvc.perform(post("/posts")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"title\": \"\", \"content\": \"내용\"}")
+                        .content("{\"title\": null, \"content\": \"내용\"}")
                 ) // application/json
                 .andExpect(status().isOk())
-                .andExpect(content().string("hello world!"))
+                .andExpect(jsonPath("$.title").value("타이틀을 입력해주세요."))
                 .andDo(MockMvcResultHandlers.print());
     }
 }

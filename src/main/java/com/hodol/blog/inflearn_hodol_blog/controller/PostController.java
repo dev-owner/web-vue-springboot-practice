@@ -2,8 +2,16 @@ package com.hodol.blog.inflearn_hodol_blog.controller;
 
 import com.hodol.blog.inflearn_hodol_blog.request.PostCreate;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -30,23 +38,33 @@ public class PostController {
 
     @PostMapping("/posts")
 //    public String post(@RequestParam Map<String, String> params) {
-    public String post(@RequestBody PostCreate params) throws Exception {
+    public Map<String, String> post(@RequestBody @Valid PostCreate params, BindingResult result) throws Exception {
 //        log.info("title={}, content={}", title, content);
         log.info("params={}", params);
 
         // validation
         String title = params.getTitle();
-        if(title == null || title.equals("")) {
-            //error
-            throw new Exception("no title!");
-        }
+//        if(title == null || title.equals("")) {
+//            //error
+//            // 검증 해야할게 많은데 이런방식으로?
+//            // dto에 validation 쓰고, @Valid 사용
+//            throw new Exception("no title!");
+//        }
 
         String content = params.getContent();
-        if(content == null || content.equals("")) {
-            //error
-        }
 
-        return "hello world!";
+        // 잘못 들어온다면, response를 만들고 싶다.
+        if (result.hasErrors()) {
+            List<FieldError> fieldErrors = result.getFieldErrors();
+            FieldError fieldError = fieldErrors.get(0);
+            String invalidFieldName = fieldError.getField();
+            String errorMessage = fieldError.getDefaultMessage();
+
+            Map<String, String> error = new HashMap<>();
+            error.put(invalidFieldName, errorMessage);
+            return error;
+        }
+        return Map.of();
     }
 
 }
