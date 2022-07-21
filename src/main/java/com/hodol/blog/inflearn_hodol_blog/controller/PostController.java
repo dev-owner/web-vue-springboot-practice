@@ -1,6 +1,8 @@
 package com.hodol.blog.inflearn_hodol_blog.controller;
 
 import com.hodol.blog.inflearn_hodol_blog.request.PostCreate;
+import com.hodol.blog.inflearn_hodol_blog.service.PostService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -17,6 +19,7 @@ import java.util.Map;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 public class PostController {
     // SSR -> jsp, thymeleaf, mustach, freemarker,
     // -> html rendering
@@ -24,6 +27,8 @@ public class PostController {
     // -> javascript + API (json)
     // vue + SSR = nuxt
     // react + SSR = next
+
+    private final PostService postService;
 
     @GetMapping("/posts")
     public String get() {
@@ -39,12 +44,12 @@ public class PostController {
     @PostMapping("/posts")
 //    public String post(@RequestParam Map<String, String> params) {
 //    public Map<String, String> post(@RequestBody @Valid PostCreate params, BindingResult result) throws Exception {
-    public Map<String, String> post(@RequestBody @Valid PostCreate params) throws Exception {
+    public Map<String, String> post(@RequestBody @Valid PostCreate request) throws Exception {
 //        log.info("title={}, content={}", title, content);
-        log.info("params={}", params);
+        log.info("params={}", request);
 
         // validation
-        String title = params.getTitle();
+        String title = request.getTitle();
 //        if(title == null || title.equals("")) {
 //            //error
 //            // 검증 해야할게 많은데 이런방식으로?
@@ -52,7 +57,7 @@ public class PostController {
 //            throw new Exception("no title!");
 //        }
 
-        String content = params.getContent();
+        String content = request.getContent();
 
         // 잘못 들어온다면, response를 만들고 싶다.
         // 이것도 좋지만.. 매번 메서드마다 검증을 해야한다.
@@ -72,6 +77,12 @@ public class PostController {
             error.put(invalidFieldName, errorMessage);
             return error;
         }*/
+
+        // service layer를 만들고 여기서 repository를 호출하는 것을 추천
+        // repository.save(params)
+        // db.save(params)
+
+        postService.write(request);
         return Map.of();
     }
 
