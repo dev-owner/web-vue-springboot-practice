@@ -14,12 +14,14 @@ public class PostService {
 
     private final PostRepository postRepository;
 
-    public void write(PostCreate postCreate) {
+    public Post write(PostCreate postCreate) {
         // repository.save(postCreate)
         // postCreate -> Entity
 
-        Post post = new Post(postCreate.getTitle(), postCreate.getContent());
-
-        postRepository.save(post);
+        Post post = Post.builder()
+                .title(postCreate.getTitle())
+                .content(postCreate.getContent())
+                .build();
+        return postRepository.save(post);
     }
 }

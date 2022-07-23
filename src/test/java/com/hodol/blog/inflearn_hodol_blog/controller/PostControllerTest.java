@@ -1,18 +1,19 @@
 package com.hodol.blog.inflearn_hodol_blog.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hodol.blog.inflearn_hodol_blog.domain.Post;
 import com.hodol.blog.inflearn_hodol_blog.repository.PostRepository;
-import org.junit.jupiter.api.Assertions;
+import com.hodol.blog.inflearn_hodol_blog.request.PostCreate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -21,6 +22,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @SpringBootTest
 class PostControllerTest {
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Autowired
     private MockMvc mockMvc;
@@ -32,6 +36,7 @@ class PostControllerTest {
     void clean() {
         postRepository.deleteAll();
     }
+
     @Test
     @DisplayName("/posts 요청 시 hello world 출력")
     void getTest() throws Exception {
@@ -64,21 +69,47 @@ class PostControllerTest {
         // 이것으로 class로 표현하기도 괜찮다.
         // 그렇기 때문에 json으로 통신이 대세
 
+        //given
+//        PostCreate postCreate = new PostCreate("제목", "내용");
+
+        // 파라미터 순서 바뀌어도 괜찮고
+        //
+
+
+        PostCreate postCreate = PostCreate.builder()
+                .title("제목")
+                .content("내용")
+                .build();
+
+        String json = objectMapper.writeValueAsString(postCreate);
+
+        System.out.println(json);
+
         mockMvc.perform(post("/posts")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"title\": \"제목\", \"content\": \"내용\"}")
+                        .contentType(APPLICATION_JSON)
+                        .content(json)
                 ) // application/json
                 .andExpect(status().isOk())
-                .andExpect(content().string("{}"))
+                .andExpect(content().string(""))
                 .andDo(print());
     }
 
     @Test
     @DisplayName("/posts 요청 시 title 값은 필수다.")
     void postValidationTest() throws Exception {
+        //given
+
+        PostCreate postCreate = PostCreate.builder()
+                .content("내용")
+                .build();
+
+        String json = objectMapper.writeValueAsString(postCreate);
+
+
+        //expected
         mockMvc.perform(post("/posts")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"title\": null, \"content\": \"내용\"}")
+                        .contentType(APPLICATION_JSON)
+                        .content(json)
                 ) // application/json
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value("400"))
@@ -90,10 +121,18 @@ class PostControllerTest {
     @Test
     @DisplayName("/posts 요청 시 DB에 값이 저장된다.")
     void test3() throws Exception {
+        //given
+        PostCreate postCreate = PostCreate.builder()
+                .title("제목")
+                .content("내용")
+                .build();
+
+        String json = objectMapper.writeValueAsString(postCreate);
+
         // when
         mockMvc.perform(post("/posts")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"title\": \"제목\", \"content\": \"내용\"}")
+                        .contentType(APPLICATION_JSON)
+                        .content(json)
                 )
                 .andExpect(status().isOk())
                 .andDo(print());

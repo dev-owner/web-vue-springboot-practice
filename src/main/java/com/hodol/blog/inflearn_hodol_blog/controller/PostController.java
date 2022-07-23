@@ -1,5 +1,6 @@
 package com.hodol.blog.inflearn_hodol_blog.controller;
 
+import com.hodol.blog.inflearn_hodol_blog.domain.Post;
 import com.hodol.blog.inflearn_hodol_blog.request.PostCreate;
 import com.hodol.blog.inflearn_hodol_blog.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +45,7 @@ public class PostController {
     @PostMapping("/posts")
 //    public String post(@RequestParam Map<String, String> params) {
 //    public Map<String, String> post(@RequestBody @Valid PostCreate params, BindingResult result) throws Exception {
-    public Map<String, String> post(@RequestBody @Valid PostCreate request) throws Exception {
+    public void post(@RequestBody @Valid PostCreate request) throws Exception {
 //        log.info("title={}, content={}", title, content);
         log.info("params={}", request);
 
@@ -82,8 +83,17 @@ public class PostController {
         // repository.save(params)
         // db.save(params)
 
+
+        // POST -> 200 or 201
+        // client에서 작성한 것을 다시 내려달라는 요청이 있을 때도 있다.
+        // case1. 저장한 데이터 enitty -> response로 응답하기
+        // case2. 저장한 데이터의 pk만 응답
+        //      client에서는 수신한 id를 글 조회 api를 통해 글 데이터를 수신받음
+        // case3. 응답 필요없음
+
         postService.write(request);
-        return Map.of();
+        //return postService.write(request);
+        //post면 만든 객체에 대해서 응답을 보통 안준다.
     }
 
 }
