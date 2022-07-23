@@ -5,17 +5,9 @@ import com.hodol.blog.inflearn_hodol_blog.request.PostCreate;
 import com.hodol.blog.inflearn_hodol_blog.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
 @Slf4j
@@ -96,4 +88,13 @@ public class PostController {
         //post면 만든 객체에 대해서 응답을 보통 안준다.
     }
 
+    /*
+        /posts -> 글 전체 조회 (검색 + 페이징)
+        /posts/{postId} -> 글 한개만 조회
+    * */
+    @GetMapping("/posts/{postId}")
+    public Post get(@PathVariable(name = "postId") Long id) {
+        Post post = postService.get(id);
+        return post;
+    }
 }
