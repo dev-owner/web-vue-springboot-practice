@@ -164,7 +164,27 @@ class PostControllerTest {
                 .andExpect(jsonPath("$.title").value(post.getTitle()))
                 .andExpect(jsonPath("$.content").value(post.getContent()))
                 .andDo(print());
+    }
 
+    @Test
+    @DisplayName("글 1개 조회, 10글자 제목 validation")
+    void test5() throws Exception {
+        //given
+        Post post = Post.builder()
+                .title("123456789012345")
+                .content("내용")
+                .build();
 
+        postRepository.save(post);
+
+        //expected
+        mockMvc.perform(get("/posts/{postId}", post.getId())
+                        .contentType(APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(post.getId()))
+                .andExpect(jsonPath("$.title").value("1234567890"))
+                .andExpect(jsonPath("$.content").value(post.getContent()))
+                .andDo(print());
     }
 }

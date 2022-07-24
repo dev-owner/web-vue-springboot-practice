@@ -2,6 +2,7 @@ package com.hodol.blog.inflearn_hodol_blog.controller;
 
 import com.hodol.blog.inflearn_hodol_blog.domain.Post;
 import com.hodol.blog.inflearn_hodol_blog.request.PostCreate;
+import com.hodol.blog.inflearn_hodol_blog.response.PostResponse;
 import com.hodol.blog.inflearn_hodol_blog.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -93,8 +94,8 @@ public class PostController {
         /posts/{postId} -> 글 한개만 조회
     * */
     @GetMapping("/posts/{postId}")
-    public Post get(@PathVariable(name = "postId") Long id) {
-        Post post = postService.get(id);
-        return post;
+    public PostResponse get(@PathVariable(name = "postId") Long id) {
+        PostResponse postResponse = postService.get(id);
+        return postResponse;
     }
 }

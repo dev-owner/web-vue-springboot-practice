@@ -3,6 +3,7 @@ package com.hodol.blog.inflearn_hodol_blog.service;
 import com.hodol.blog.inflearn_hodol_blog.domain.Post;
 import com.hodol.blog.inflearn_hodol_blog.repository.PostRepository;
 import com.hodol.blog.inflearn_hodol_blog.request.PostCreate;
+import com.hodol.blog.inflearn_hodol_blog.response.PostResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -58,12 +59,26 @@ class PostServiceTest {
 
 
         //when
-        Post post = postService.get(requestPost.getId());
+        PostResponse postResponse = postService.get(requestPost.getId());
 
         //then
-        assertNotNull(post);
+        assertNotNull(postResponse);
         Post returnPost = postRepository.findAll().get(0);
         assertEquals("foo", returnPost.getTitle());
         assertEquals("bar", returnPost.getContent());
+
+        // json으로 잘 내려오지만, 문제가 발생할 수 있음
+        // post service에서 repository에서 조회 후 controller에 응답하는데,
+        // 나중에 큰 문제 발생
+        // -> 클라이언트 요구사항
+        // json 응답에서 title 값 길이를 최대 10글자로 해주세요.
+        // 클라가 맞긴한데, 서버에서 해야 할 경우
+        // public String getTitle() {
+        //        return this.title.substring(0, 10);
+        //    }
+        // 위를 Post entity에 생성하면.., 근데 이건 당연히 이상한거같은데?
+        // 그럴때는 응답 클래스 분리 -> 서비스 정책에 맞는 응답 클래스를 만들어야 한다.
+
+
     }
 }
