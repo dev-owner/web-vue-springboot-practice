@@ -1,6 +1,5 @@
 package com.hodol.blog.inflearn_hodol_blog.controller;
 
-import com.hodol.blog.inflearn_hodol_blog.domain.Post;
 import com.hodol.blog.inflearn_hodol_blog.request.PostCreate;
 import com.hodol.blog.inflearn_hodol_blog.response.PostResponse;
 import com.hodol.blog.inflearn_hodol_blog.service.PostService;
@@ -9,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 
 @Slf4j
@@ -23,11 +23,6 @@ public class PostController {
     // react + SSR = next
 
     private final PostService postService;
-
-    @GetMapping("/posts")
-    public String get() {
-        return "hello world!";
-    }
 
     // HTTP Method
     // GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD, TRACE, CONNECT
@@ -95,7 +90,12 @@ public class PostController {
     * */
     @GetMapping("/posts/{postId}")
     public PostResponse get(@PathVariable(name = "postId") Long id) {
-        PostResponse postResponse = postService.get(id);
-        return postResponse;
+        return postService.get(id);
+    }
+
+    // 여러개 조회 API
+    @GetMapping("/posts")
+    public List<PostResponse> getList() {
+        return postService.getList();
     }
 }

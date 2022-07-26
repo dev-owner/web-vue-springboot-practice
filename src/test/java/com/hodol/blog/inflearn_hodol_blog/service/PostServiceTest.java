@@ -4,14 +4,16 @@ import com.hodol.blog.inflearn_hodol_blog.domain.Post;
 import com.hodol.blog.inflearn_hodol_blog.repository.PostRepository;
 import com.hodol.blog.inflearn_hodol_blog.request.PostCreate;
 import com.hodol.blog.inflearn_hodol_blog.response.PostResponse;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 class PostServiceTest {
@@ -79,6 +81,29 @@ class PostServiceTest {
         // 위를 Post entity에 생성하면.., 근데 이건 당연히 이상한거같은데?
         // 그럴때는 응답 클래스 분리 -> 서비스 정책에 맞는 응답 클래스를 만들어야 한다.
 
+
+    }
+
+    @Test
+    @DisplayName("글 여러개 조회")
+    void test3() {
+        //given
+        postRepository.saveAll(List.of(
+                Post.builder()
+                        .title("foo1")
+                        .content("bar1")
+                        .build(),
+                Post.builder()
+                        .title("foo2")
+                        .content("bar2")
+                        .build()
+        ));
+
+        //when
+        List<PostResponse> posts = postService.getList();
+
+        //then
+        assertEquals(2L, posts.size());
 
     }
 }
