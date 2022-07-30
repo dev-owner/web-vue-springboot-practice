@@ -3,6 +3,7 @@ package com.hodol.blog.inflearn_hodol_blog.service;
 import com.hodol.blog.inflearn_hodol_blog.domain.Post;
 import com.hodol.blog.inflearn_hodol_blog.repository.PostRepository;
 import com.hodol.blog.inflearn_hodol_blog.request.PostCreate;
+import com.hodol.blog.inflearn_hodol_blog.request.PostSearch;
 import com.hodol.blog.inflearn_hodol_blog.response.PostResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -93,7 +94,7 @@ class PostServiceTest {
     @DisplayName("글 1 page 조회")
     void test3() {
         //given
-        List<Post> requestPosts = IntStream.range(1, 31)
+        List<Post> requestPosts = IntStream.range(1, 20)
                 .mapToObj(i ->
                         Post.builder()
                                 .title("제목 " + i)
@@ -104,16 +105,15 @@ class PostServiceTest {
         // sql -> select, limit, offset
         postRepository.saveAll(requestPosts);
 
-        Pageable pageable = PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "id"));
+//        Pageable pageable = PageRequest.of(0, 5);
+        PostSearch postSearch = PostSearch.builder().page(1).build();
 
         //when
-        List<PostResponse> posts = postService.getList(pageable);
+        List<PostResponse> posts = postService.getList(postSearch);
 
         //then
-        assertEquals(5L, posts.size());
-        assertEquals("제목 30", posts.get(0).getTitle());
-        assertEquals("제목 26", posts.get(4).getTitle());
-
+        assertEquals(10L, posts.size());
+        assertEquals("제목 19", posts.get(0).getTitle());
 
     }
 
