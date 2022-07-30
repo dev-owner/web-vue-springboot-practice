@@ -6,6 +6,9 @@ import com.hodol.blog.inflearn_hodol_blog.request.PostCreate;
 import com.hodol.blog.inflearn_hodol_blog.response.PostResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -56,7 +59,7 @@ public class PostService {
 
     }
 
-    public List<PostResponse> getList() {
+    public List<PostResponse> getList(Pageable pageable) {
         /**
          * 이것도 나쁘지는 않은데, 나중에 많아지면 문제
          */
@@ -67,7 +70,8 @@ public class PostService {
 //                        .content(post.getContent())
 //                        .build())
 //                .collect(Collectors.toList());
-        return postRepository.findAll().stream()
+
+        return postRepository.findAll(pageable).stream()
                 .map(PostResponse::new)
                 .collect(Collectors.toList());
 
