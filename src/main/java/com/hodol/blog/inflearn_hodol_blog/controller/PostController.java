@@ -1,6 +1,7 @@
 package com.hodol.blog.inflearn_hodol_blog.controller;
 
 import com.hodol.blog.inflearn_hodol_blog.request.PostCreate;
+import com.hodol.blog.inflearn_hodol_blog.request.PostEdit;
 import com.hodol.blog.inflearn_hodol_blog.request.PostSearch;
 import com.hodol.blog.inflearn_hodol_blog.response.PostResponse;
 import com.hodol.blog.inflearn_hodol_blog.service.PostService;
@@ -98,5 +99,10 @@ public class PostController {
     @GetMapping("/posts")
     public List<PostResponse> getList(@ModelAttribute PostSearch postSearch) {
         return postService.getList(postSearch);
+    }
+
+    @PatchMapping("/posts/{postId}")
+    public PostResponse edit(@PathVariable Long postId, @RequestBody @Valid PostEdit postEdit) {
+        return postService.edit(postId, postEdit);
     }
 }
